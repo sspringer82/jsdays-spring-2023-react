@@ -1,0 +1,31 @@
+{
+  "users": [
+    {
+      "id": 13,
+      "firstName": "Gustave",
+      "lastName": "Stark",
+      "birthdate": "1942-05-17T15:13:10.704Z",
+      "street": "1586 Annamae Causeway Suite 411",
+      "city": "Paterson",
+      "zipCode": "55808-0543"
+    },
+    {
+      "firstName": "asdf",
+      "lastName": "asdf",
+      "birthdate": "asdf",
+      "street": "asdf",
+      "city": "asdf",
+      "zipCode": "asdf",
+      "id": 15
+    },
+    {
+      "firstName": "lala",
+      "lastName": "lulu",
+      "birthdate": "lele",
+      "street": "",
+      "city": "",
+      "zipCode": "",
+      "id": 16
+    }
+  ]
+}
