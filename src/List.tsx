@@ -1,31 +1,18 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import Form from './Form';
 import ListItem from './ListItem';
 import { InputPerson } from './Person';
-import { usePersonContext } from './PersonProvider';
+import { usePerson } from './usePerson';
 
-const url = `${process.env.REACT_APP_BACKEND_URL}/users`;
+
 
 const List: React.FC = () => {
-  const [persons, setPersons] = usePersonContext();
+  const {persons, handleSave, handleDelete} = usePerson();
+
   const [form, setForm] = useState<{ edit: number | null; showForm: boolean }>({
     edit: null,
     showForm: false,
   });
-
-  useEffect(() => {
-    fetch(url)
-      .then((response) => response.json())
-      .then((data) => setPersons(data));
-  }, [setPersons]);
-
-  function handleDelete(id: number): void {
-    fetch(`${url}/${id}`, { method: 'DELETE' }).then((response) => {
-      setPersons((prevPersons) =>
-        prevPersons?.filter((person) => person.id !== id)
-      );
-    });
-  }
 
   function handleEdit(id: number): void {
     setForm({ edit: id, showForm: true });
@@ -39,35 +26,10 @@ const List: React.FC = () => {
     setForm({ edit: null, showForm: true });
   }
 
-  function handleSave(person: InputPerson) {
-    const method = person.id ? 'PUT' : 'POST';
-    let saveUrl = person.id ? `${url}/${person.id}` : url;
-    fetch(saveUrl, {
-      method,
-      body: JSON.stringify(person),
-      headers: { 'Content-Type': 'application/json' },
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        setPersons((prevPersons) => {
-          if (person.id) {
-            return prevPersons.map((prevPerson) => {
-              if (prevPerson.id === person.id) {
-                return person;
-              }
-              return prevPerson;
-            });
-          }
-          return [...prevPersons, data];
-        });
-        clearAndHideForm();
-      });
-  }
-
   return (
     <>
       {form.showForm && (
-        <Form id={form.edit} onSave={handleSave} onCancel={clearAndHideForm} />
+        <Form id={form.edit} onSave={(person: InputPerson) => {handleSave(person); clearAndHideForm();}} onCancel={clearAndHideForm} />
       )}
       <table>
         <thead>
