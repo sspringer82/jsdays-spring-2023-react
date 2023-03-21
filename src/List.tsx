@@ -1,14 +1,31 @@
 import React from 'react';
 import ListItem from './ListItem';
-import { usePerson } from './usePerson';
 import { useNavigate } from 'react-router-dom';
+import { useMutation, useQuery, useQueryClient } from 'react-query';
+import { getPersons, removePerson } from './person.api';
 
 
 
 const List: React.FC = () => {
   const navigate = useNavigate();
 
-  const {persons, handleDelete} = usePerson();
+  const queryClient = useQueryClient();
+
+  const {
+    data: persons,
+    isLoading,
+    isError,
+  } = useQuery(['persons'], getPersons);
+
+  const mutation = useMutation(removePerson, {
+    onSuccess() {
+      queryClient.invalidateQueries(['persons']);
+    },
+  });
+
+  function handleDelete(id: number) {
+    mutation.mutate(id);
+  }
 
   return (
     <>
