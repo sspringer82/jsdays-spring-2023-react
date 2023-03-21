@@ -4,8 +4,6 @@ import { useNavigate } from 'react-router-dom';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { getPersons, removePerson } from './person.api';
 
-
-
 const List: React.FC = () => {
   const navigate = useNavigate();
 
@@ -27,30 +25,44 @@ const List: React.FC = () => {
     mutation.mutate(id);
   }
 
+  if (isLoading) {
+    return <div>...loading data</div>;
+  }
+
+  if (isError) {
+    return <div>whoops! an error happened</div>
+  }
+
+  let content = <div>Keine Daten vorhanden</div>;
+
+  if (persons && persons.length > 0) {
+      content = <table>
+      <thead>
+        <tr>
+          <th>first name</th>
+          <th>last name</th>
+          <th>birth date</th>
+          <th>street</th>
+          <th>city</th>
+          <th>zip code</th>
+        </tr>
+      </thead>
+      <tbody>
+        {persons?.map((person) => (
+          <ListItem
+            key={person.id}
+            person={person}
+            onDelete={handleDelete}
+            onEdit={() => navigate('/edit/' + person.id)}
+          />
+        ))}
+      </tbody>
+    </table>;
+  }
+  
   return (
     <>
-      <table>
-        <thead>
-          <tr>
-            <th>first name</th>
-            <th>last name</th>
-            <th>birth date</th>
-            <th>street</th>
-            <th>city</th>
-            <th>zip code</th>
-          </tr>
-        </thead>
-        <tbody>
-          {persons?.map((person) => (
-            <ListItem
-              key={person.id}
-              person={person}
-              onDelete={handleDelete}
-              onEdit={() => navigate('/edit/' + person.id)}
-            />
-          ))}
-        </tbody>
-      </table>
+      {content}
       <button
         onClick={() => navigate('/create')}
         style={{
