@@ -1,36 +1,17 @@
-import React, { useState } from 'react';
-import Form from './Form';
+import React from 'react';
 import ListItem from './ListItem';
-import { InputPerson } from './Person';
 import { usePerson } from './usePerson';
+import { useNavigate } from 'react-router-dom';
 
 
 
 const List: React.FC = () => {
-  const {persons, handleSave, handleDelete} = usePerson();
+  const navigate = useNavigate();
 
-  const [form, setForm] = useState<{ edit: number | null; showForm: boolean }>({
-    edit: null,
-    showForm: false,
-  });
-
-  function handleEdit(id: number): void {
-    setForm({ edit: id, showForm: true });
-  }
-
-  function clearAndHideForm(): void {
-    setForm({ edit: null, showForm: false });
-  }
-
-  function handleNew(): void {
-    setForm({ edit: null, showForm: true });
-  }
+  const {persons, handleDelete} = usePerson();
 
   return (
     <>
-      {form.showForm && (
-        <Form id={form.edit} onSave={(person: InputPerson) => {handleSave(person); clearAndHideForm();}} onCancel={clearAndHideForm} />
-      )}
       <table>
         <thead>
           <tr>
@@ -48,13 +29,13 @@ const List: React.FC = () => {
               key={person.id}
               person={person}
               onDelete={handleDelete}
-              onEdit={handleEdit}
+              onEdit={() => navigate('/edit/' + person.id)}
             />
           ))}
         </tbody>
       </table>
       <button
-        onClick={handleNew}
+        onClick={() => navigate('/create')}
         style={{
           position: 'sticky',
           bottom: 20,
